@@ -1,1 +1,108 @@
 
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d20">
+<title>M (RAJA) AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080d20;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:24px;background:#101a35}
+.logo{font-size:30px;font-weight:bold;color:#55c9ff}
+header p{color:#a9bddc}
+main{max-width:650px;margin:auto;padding:16px}
+.welcome{text-align:center;padding:20px}
+.welcome h2{color:#55c9ff}
+#chat{height:48vh;min-height:260px;overflow-y:auto;padding:12px;background:#101a35;border-radius:15px}
+.msg{padding:12px;margin:10px 0;border-radius:13px;max-width:90%;line-height:1.5;white-space:pre-wrap}
+.bot{background:#20345a}
+.user{background:#075b91;margin-left:auto}
+.controls{display:flex;gap:8px;margin-top:14px}
+input{min-width:0;flex:1;padding:14px;border-radius:12px;border:1px solid #456080;background:#15213c;color:white;font-size:16px}
+button{border:0;border-radius:12px;padding:13px;background:#087ec1;color:white;font-weight:bold}
+.tools{display:flex;gap:9px;margin-top:12px}
+.tools button{flex:1;background:#263a60}
+footer{text-align:center;color:#8196b8;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">M (RAJA) AI 🤖</div>
+<p>आपका अपना स्मार्ट AI असिस्टेंट</p>
+</header>
+<main>
+<div class="welcome">
+<h2>नमस्ते राजा! 👋</h2>
+<p>मुझसे हिंदी में बात करो।</p>
+</div>
+<div id="chat">
+<div class="msg bot">नमस्ते राजा भाई! ❤️ मैं आपकी क्या मदद कर सकता हूँ?</div>
+</div>
+<div class="controls">
+<input id="question" placeholder="अपना सवाल लिखें...">
+<button onclick="sendMessage()">भेजें</button>
+</div>
+<div class="tools">
+<button onclick="startVoice()">🎤 बोलें</button>
+<button onclick="speakLast()">🔊 सुनें</button>
+</div>
+</main>
+<footer>M (RAJA) AI · आपका अपना असिस्टेंट</footer>
+<script>
+const chat=document.getElementById("chat");
+const input=document.getElementById("question");
+let lastAnswer="नमस्ते राजा भाई!";
+
+function addMessage(text,type){
+let d=document.createElement("div");
+d.className="msg "+type;
+d.textContent=text;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function sendMessage(){
+let q=input.value.trim();
+if(!q)return;
+addMessage(q,"user");
+input.value="";
+let s=q.toLowerCase();
+let a="आपका सवाल मिला! 😊 अभी मैं डेमो मोड में हूँ। असली AI जवाब के लिए AI सेवा जोड़नी होगी।";
+if(s.includes("नमस्ते")||s.includes("हेलो")||s.includes("hello")||s==="hi"){
+a="नमस्ते राजा भाई! ❤️ बताइए क्या मदद चाहिए?";
+}else if(s.includes("नाम")){
+a="मेरा नाम M (RAJA) AI है। 🤖";
+}else if(s.includes("समय")){
+a="अभी समय है "+new Date().toLocaleTimeString("hi-IN");
+}else if(s.includes("धन्यवाद")){
+a="आपका स्वागत है राजा भाई! ❤️";
+}
+lastAnswer=a;
+addMessage(a,"bot");
+}
+input.addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage()});
+
+function startVoice(){
+let S=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!S){alert("इस ब्राउज़र में Voice सुविधा उपलब्ध नहीं है।");return;}
+let r=new S();
+r.lang="hi-IN";
+r.onresult=e=>{
+input.value=e.results[0][0].transcript;
+sendMessage();
+};
+r.start();
+}
+function speakLast(){
+if(!window.speechSynthesis){alert("आवाज़ उपलब्ध नहीं है");return;}
+speechSynthesis.cancel();
+let u=new SpeechSynthesisUtterance(lastAnswer);
+u.lang="hi-IN";
+speechSynthesis.speak(u);
+}
+</script>
+</body>
+</html>
+
